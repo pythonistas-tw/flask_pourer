@@ -19,10 +19,8 @@ class FlaskApplicationFactory(object):
 
     def install_blueprint(self):
         '''install_blueprint'''
-
-        '''
         # Blueprint source: Import the blueprints and note these sources
-        from .views import users
+        from .http.controllers import users
 
         # Blueprint List: Wrap up the all blueprints
         buleprints = (
@@ -32,10 +30,8 @@ class FlaskApplicationFactory(object):
         # Initializing process: Start to initial each blueprint
         for blueprint in buleprints:
             self.app.register_blueprint(**blueprint)
-        pass
-        '''
 
-    def install_error_handlers(self):
+    def install_handlers(self):
         pass
 
     def create_app(self, config_filename):
@@ -43,5 +39,5 @@ class FlaskApplicationFactory(object):
         self.app.config.from_object(config_filename)
         self.install_extension()
         self.install_blueprint()
-        self.install_error_handlers()
+        self.install_handlers()
         return self.app
