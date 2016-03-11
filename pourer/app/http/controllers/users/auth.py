@@ -19,10 +19,11 @@ from flask.views import MethodView
 from webargs.flaskparser import use_args
 
 # level5: specify-project packages
+from database.user.document import User
 from . import users_bp
 from ..mixins import RestfulViewMixin
 from ...requests.users.auth import SignupRequest
-from ....models.user.document import User
+
 
 # from ...schemas.users import SignupSchema, LoginSchema, ResetPasswordSchema
 # from ...error_handlers import user_errors
