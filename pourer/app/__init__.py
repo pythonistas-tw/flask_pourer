@@ -5,8 +5,20 @@
 #  @version       0.0
 """Init flask app
 """
+# level1: native python packages
+# None
+
+# level2: native web framework packages
 from flask import Flask
+
+# level3: relative web framework plugins
 from flask.ext.mongoengine import MongoEngine
+
+# level4: third-party packages
+# None
+
+# level5: specify-project packages
+# None
 
 
 class FlaskApplicationFactory(object):
