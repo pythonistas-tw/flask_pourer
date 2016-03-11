@@ -17,6 +17,7 @@ from flask.views import MethodView
 
 # level4: third-party packages
 from webargs.flaskparser import use_args
+from mongoengine.errors import NotUniqueError
 
 # level5: specify-project packages
 from database.user.document import User
@@ -35,14 +36,10 @@ class SignupView(RestfulViewMixin, MethodView):
     @use_args(SignupRequest, locations=('json',))
     def post(self, args):
         '''create user'''
-        user = User.create_user(**args)
-        '''
         try:
-            user.add()
-        except IntegrityError as err:
-            err.data = user_errors.USER_ERR_1001_REGISTERED_ACC
-            raise
-        '''
+            user = User.create_user(**args)
+        except NotUniqueError:
+            raise NotUniqueError()  # https://github.com/MongoEngine/mongoengine/blob/master/mongoengine/errors.py
         return self.get_response(status=201)
 
 '''
