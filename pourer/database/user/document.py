@@ -29,7 +29,7 @@ class User(Document):
     at http://docs.djangoproject.com/en/dev/topics/auth/#users
     """
     # Field classification: basic info fields
-    email = fields.EmailField(unique=True, sparse=True)
+    email = fields.EmailField(unique=True)
     password = fields.StringField(max_length=128)
     displayname = fields.StringField(max_length=30)
 
@@ -69,10 +69,24 @@ class User(Document):
     def create_user(cls, email, password, displayname=None):
         """classmethod - create_user
         """
-        if displayname is None:
+        if not displayname:
             displayname, _ = email.strip().split('@', 1)
 
         user = cls(displayname=displayname, email=email)
         user.set_password(password)
+        user.save()
+        return user
+
+    @classmethod
+    def login(cls, email, password):
+        """classmethod - login"""
+        now = datetime.utcnow()
+        user = cls.objects.filter(email=email).first()
+
+        # Validation process: Using Short-circuit evaluation to check invalid user
+        if not user or not user.check_password(password):
+            return None
+
+        user.last_login = now
         user.save()
         return user
