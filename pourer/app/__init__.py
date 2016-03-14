@@ -21,13 +21,15 @@ from flask.ext.mongoengine import MongoEngine
 # None
 
 
+app = Flask(__name__)
+
+
 class FlaskApplicationFactory(object):
     '''FlaskApplicationFactory'''
-    app = Flask(__name__)
 
     def install_extension(self):
         '''install_extension'''
-        _ = MongoEngine(self.app)
+        _ = MongoEngine(app)
 
     def install_blueprint(self):
         '''install_blueprint'''
@@ -41,15 +43,18 @@ class FlaskApplicationFactory(object):
 
         # Initializing process: Start to initial each blueprint
         for blueprint in buleprints:
-            self.app.register_blueprint(**blueprint)
+            app.register_blueprint(**blueprint)
 
     def install_handlers(self):
-        pass
+        from .handlers import (
+            status_code_handlers,
+            mongoengine_handlers
+        )
 
     def create_app(self, config_filename):
         '''create_app'''
-        self.app.config.from_object(config_filename)
+        app.config.from_object(config_filename)
         self.install_extension()
         self.install_blueprint()
         self.install_handlers()
-        return self.app
+        return app

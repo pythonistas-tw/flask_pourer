@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-#  @first_date    20160129
-#  @date          20160129
+#  @first_date    20160314
+#  @date          20160314
 #  @version       0.0
 """auth for Users API
 """
@@ -20,11 +20,11 @@ from webargs.flaskparser import use_args
 from mongoengine.errors import NotUniqueError
 
 # level5: specify-project packages
-from database.user.document import User
 from . import users_bp
 from ..mixins import RestfulViewMixin
+from ...error_codes import user_errors
 from ...requests.users.auth import SignupRequest
-
+from database.user.document import User
 
 # from ...schemas.users import SignupSchema, LoginSchema, ResetPasswordSchema
 # from ...error_handlers import user_errors
@@ -38,8 +38,9 @@ class SignupView(RestfulViewMixin, MethodView):
         '''create user'''
         try:
             user = User.create_user(**args)
-        except NotUniqueError:
-            raise NotUniqueError()  # https://github.com/MongoEngine/mongoengine/blob/master/mongoengine/errors.py
+        except NotUniqueError as err:
+            err.data = user_errors.ERR_1001_REGISTERED_ACC
+            raise
         return self.get_response(status=201)
 
 '''
