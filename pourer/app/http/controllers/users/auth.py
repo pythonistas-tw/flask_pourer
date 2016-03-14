@@ -58,7 +58,6 @@ class LoginView(RestfulViewMixin, MethodView):
     @use_args(LoginRequest, locations=('json',))
     def post(self, args):
         # model process: create token key
-        print dir(User)
         user = User.login(**args)
         if not user:
             abort(401)

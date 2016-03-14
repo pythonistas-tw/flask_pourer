@@ -30,8 +30,7 @@ EXPIRING_TOKEN_LIFESPAN = 60 * 60  # Default: Expired after one hour
 class Token(Document):
     # Field classification: basic info fields
     key = fields.StringField(max_length=128, required=True)
-    user = fields.ReferenceField(User, reverse_delete_rule=CASCADE,
-                                 required=True, primary_key=True)
+    user = fields.ReferenceField(User, reverse_delete_rule=CASCADE, required=True)
 
     # Field classification: datetime info field
     created_at = fields.DateTimeField(default=datetime.utcnow)
