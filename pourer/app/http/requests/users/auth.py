@@ -34,7 +34,7 @@ class SignupRequest(Schema):
 
 
 class ProfileUpdateRequest(Schema):
-    nickname = CommonFields.nicknamefield
+    displayname = CommonFields.nicknamefield
 
     class Meta:
         strict = True

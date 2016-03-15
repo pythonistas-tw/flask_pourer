@@ -19,8 +19,8 @@ import os
 # level4: third-party packages
 from mongoengine import Document, fields, CASCADE
 
-
 # level5: specify-project packages
+from .queryset import TokenQuerySet
 from ..user.document import User
 
 
@@ -28,6 +28,7 @@ EXPIRING_TOKEN_LIFESPAN = 60 * 60  # Default: Expired after one hour
 
 
 class Token(Document):
+    '''Token'''
     # Field classification: basic info fields
     key = fields.StringField(max_length=128, required=True)
     user = fields.ReferenceField(User, reverse_delete_rule=CASCADE, required=True)
@@ -38,23 +39,27 @@ class Token(Document):
     meta = {
         'indexes': [
             {'fields': ['created_at'], 'expireAfterSeconds': EXPIRING_TOKEN_LIFESPAN}
-        ]
+        ],
+        'queryset_class': TokenQuerySet,
     }
 
     def __unicode__(self):
-        return self.key
+        return "<Token(email='%s')>" % (self.user.email)
 
     def save(self, *args, **kwargs):
-        self.key = self.generate_key()
+        self.generate_key()
         return super(Token, self).save(*args, **kwargs)
 
     def generate_key(self):
-        return binascii.hexlify(os.urandom(64)).decode()  # It has 128 of length
+        '''generate_key'''
+        self.key = binascii.hexlify(os.urandom(64)).decode()  # It has 128 of length
 
     def get_lifespan(self):
+        '''get_lifespan'''
         difference_datetime = datetime.utcnow() - self.created_at
         rest_lifespan = timedelta(seconds=EXPIRING_TOKEN_LIFESPAN) - difference_datetime
         return str(rest_lifespan)
 
     def get_expiration_date(self):
+        '''get_expiration_date'''
         return self.created_at + timedelta(seconds=EXPIRING_TOKEN_LIFESPAN)

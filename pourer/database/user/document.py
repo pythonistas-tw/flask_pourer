@@ -49,7 +49,7 @@ class User(Document):
     }
 
     def __unicode__(self):
-        return self.email
+        return "<User(email='%s')>" % (self.email)
 
     def is_admin(self):
         """is_admin"""
