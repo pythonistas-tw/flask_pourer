@@ -7,9 +7,8 @@
 """
 from flask.ext.script import Manager
 
-from app import FlaskApplicationFactory
+from app import FlaskApplicationFactory, commands
 import configs
-import scripts
 
 
 app = FlaskApplicationFactory().create_app(configs.CONFIGS['development'])
@@ -17,4 +16,4 @@ manager = Manager(app)
 
 
 if __name__ == "__main__":
-    manager.run(scripts.COMMANDS)
+    manager.run(commands.COMMANDS)
