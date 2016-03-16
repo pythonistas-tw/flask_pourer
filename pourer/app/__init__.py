@@ -24,6 +24,20 @@ from flask.ext.mongoengine import MongoEngine
 app = Flask(__name__)
 
 
+def url(blueprints, version=None):
+    # data process: Decide url structure of the application
+    prefix = '/%s' % version if version else ''
+
+    # data process: set the new url_prefix (create new object and avoid mutable dict)
+    bps = []
+    for blueprint in blueprints:
+        bps.append({
+            'blueprint': blueprint['blueprint'],
+            'url_prefix': prefix + blueprint['url_prefix']
+        })
+    return bps
+
+
 class FlaskApplicationFactory(object):
     '''FlaskApplicationFactory'''
 
@@ -33,27 +47,34 @@ class FlaskApplicationFactory(object):
 
     def install_blueprint(self):
         '''install_blueprint'''
-        # Blueprint source: Import the blueprints and note these sources
-        from .http.controllers import users
+        # blueprint porcess: import patterns it's ready to be registered
+        from .http.blueprints import BLUEPRINT_PATTERNS as http_bp_patterns
 
-        # Blueprint List: Wrap up the all blueprints
-        buleprints = (
-            dict(blueprint=users.users_bp, url_prefix='/users'),
+        # blueprint porcess: Add version for each patterns
+        versioning_patterns = (
+            url(http_bp_patterns),
+            url(http_bp_patterns, version='v1'),
         )
 
-        # Initializing process: Start to initial each blueprint
-        for blueprint in buleprints:
-            app.register_blueprint(**blueprint)
+        # blueprint porcess: app register blueprint
+        for blueprint_patterns in versioning_patterns:
+            for blueprint in blueprint_patterns:
+                app.register_blueprint(**blueprint)
 
     def install_handlers(self):
+        '''install_handlers'''
         from .handlers import (
             status_code_handlers,
             mongoengine_handlers
         )
 
+    def install_middlewares(self):
+        from .middlewares import process_request
+
     def create_app(self, config_filename):
         '''create_app'''
         app.config.from_object(config_filename)
+        self.install_middlewares()
         self.install_extension()
         self.install_blueprint()
         self.install_handlers()
