@@ -1,0 +1,25 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+#  @first_date    20160311
+#  @date          20160311
+#  @version       0.0
+"""LocalConfig included important infomation
+"""
+
+
+class FlaskMongoengineConfig(object):
+    """flask-mongoengine config
+
+    Builtin Configuration Values:
+        http://docs.mongoengine.org/projects/flask-mongoengine/en/latest/#configuration
+    """
+    MONGODB_SETTINGS = {
+        'db': 'default',
+        'host': 'mongodb://localhost/database_name'
+    }
+
+
+class LocalConfig(FlaskMongoengineConfig):
+    """Input your config of installed package in inheritance objects of BaseConfig
+    """
+    pass
