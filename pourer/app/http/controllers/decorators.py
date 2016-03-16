@@ -38,3 +38,4 @@ def token_authentication(f):
         request.authorization = token
         return f(*args, **kwargs)
     return decorated_function
+

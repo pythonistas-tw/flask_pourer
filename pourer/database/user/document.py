@@ -78,6 +78,24 @@ class User(Document):
         return user
 
     @classmethod
+    def create_superuser(cls, email, password, displayname=None):
+        """classmethod - create_superuser
+        """
+        if not displayname:
+            displayname, _ = email.strip().split('@', 1)
+
+        user = cls(
+            displayname=displayname,
+            email=email,
+            is_active=1,
+            is_superuser=1,
+            is_staff=1
+        )
+        user.set_password(password)
+        user.save()
+        return user
+
+    @classmethod
     def login(cls, email, password):
         """classmethod - login"""
         now = datetime.utcnow()

@@ -5,41 +5,23 @@
 #  @version       0.0
 """Command
 """
-# level1: native python packages
-# None
-
-# level2: native web framework packages
-# None
-
-# level3: relative web framework plugins
-from flask.ext.script import Command, Shell
+COMMANDS = {}
 
 
-# level4: third-party packages
-# None
+def install_commands():
+    '''install_commands'''
+    #
+    from .auth_commands import AUTH_COMMANDS
+    from .flask_commands import FLASK_COMMANDS
 
-# level5: specify-project packages
-from .. import app
-from database.user.document import User
-from database.token.document import Token
+    #
+    command_sets = (
+        AUTH_COMMANDS,
+        FLASK_COMMANDS,
+    )
 
+    #
+    for commands in command_sets:
+        COMMANDS.update(commands)
 
-def make_shell_context():
-    documents = {
-        "User": User,
-        "Token": Token
-    }
-    return dict(app=app, **documents)
-
-
-class Hello(Command):
-    "prints hello world"
-
-    def run(self):
-        print "hello world"
-
-
-COMMANDS = {
-    'shell': Shell(make_context=make_shell_context),
-    'hello': Hello(),
-}
+install_commands()
