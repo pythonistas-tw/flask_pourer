@@ -15,8 +15,10 @@ setup(
     description='Extension of JSONAPI for flask',
     long_description=__doc__,
     py_modules=['flask_pourer'],
+    packages=['flask_pourer'],
     zip_safe=False,
     include_package_data=True,
+    platforms='any',
     install_requires=[
         'Flask',
         'pymongo'
