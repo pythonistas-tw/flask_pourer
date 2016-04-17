@@ -21,7 +21,8 @@ setup(
     platforms='any',
     install_requires=[
         'Flask',
-        'pymongo'
+        'pymongo',
+        'python-mimeparse'
     ],
     classifiers=[
         'Environment :: Web Environment',
