@@ -5,11 +5,12 @@
 import marshmallow as ma
 from marshmallow.exceptions import ValidationError
 from marshmallow.compat import iteritems, PY2
+from marshmallow.fields import *
 
-from fields import BaseRelationship
 
-TYPE = 'type'
-ID = 'id'
+DOC_TYPE = 'type'
+OBJ_ID = 'id'
+
 
 def plain_function(f):
     """Ensure that ``callable`` is a plain function rather than an unbound method."""
@@ -18,12 +19,14 @@ def plain_function(f):
     # Python 3 doesn't have bound/unbound methods, so don't need to do anything
     return f
 
+
 class SchemaOpts(ma.SchemaOpts):
 
     def __init__(self, meta):
         super(SchemaOpts, self).__init__(meta)
         self.type_ = getattr(meta, 'type_', None)
         self.inflect = plain_function(getattr(meta, 'inflect', None))
+
 
 class Schema(ma.Schema):
     class Meta:
@@ -93,7 +96,6 @@ class Schema(ma.Schema):
             formatted_messages = self.format_errors(errors, many=many)
         return result, formatted_messages
 
-
     def inflect(self, text):
         return self.opts.inflect(text) if self.opts.inflect else text
 
@@ -146,7 +148,7 @@ class Schema(ma.Schema):
 
     def format_item(self, item):
         ret = self.dict_class()
-        ret[TYPE] = self.opts.type_
+        ret[DOC_TYPE] = self.opts.type_
 
         # Get the schema attributes so we can confirm `dump-to` values exist
         attributes = {
@@ -156,8 +158,8 @@ class Schema(ma.Schema):
 
         for field_name, value in iteritems(item):
             attribute = attributes[field_name]
-            if attribute == ID:
-                ret[ID] = value
+            if attribute == OBJ_ID:
+                ret[OBJ_ID] = value
             elif isinstance(self.fields[attribute], BaseRelationship):
                 if 'relationships' not in ret:
                     ret['relationships'] = self.dict_class()
@@ -178,3 +180,11 @@ class Schema(ma.Schema):
     def wrap_response(self, data, many):
         ret = {'data': data}
         return ret
+
+
+class BaseRelationship(Field):
+    pass
+
+
+class Relationship(BaseRelationship):
+    pass
