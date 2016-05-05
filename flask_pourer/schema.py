@@ -8,7 +8,7 @@ from marshmallow.compat import iteritems, PY2
 from marshmallow.fields import *
 
 
-DOC_TYPE = 'type'
+OBJ_TYPE = 'type'
 OBJ_ID = 'id'
 
 
@@ -29,6 +29,7 @@ class SchemaOpts(ma.SchemaOpts):
 
 
 class Schema(ma.Schema):
+
     class Meta:
         pass
 
@@ -58,7 +59,8 @@ class Schema(ma.Schema):
                 }
             ])
         if item['type'] != self.opts.type_:
-            raise ValueError('type error: ' + item['type'] + ', type: ' + self.opts.type_ + ' is necessary')
+            raise ValueError(
+                'type error: ' + item['type'] + ', type: ' + self.opts.type_ + ' is necessary')
 
         payload = self.dict_class()
         if 'id' in item:
@@ -148,7 +150,7 @@ class Schema(ma.Schema):
 
     def format_item(self, item):
         ret = self.dict_class()
-        ret[DOC_TYPE] = self.opts.type_
+        ret[OBJ_TYPE] = self.opts.type_
 
         # Get the schema attributes so we can confirm `dump-to` values exist
         attributes = {
